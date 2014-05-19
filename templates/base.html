@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.0/css/ink-flex.min.css">
+    <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.0/css/font-awesome.min.css">
+    {% block header_link %}
+    {% endblock %}
+
+    <!-- load inks css for IE8 -->
+    <!--[if lt IE 9 ]>
+        <link rel="stylesheet" href="http://cdn.ink.sapo.pt/3.0.0/css/ink-ie.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <![endif]-->
+
+    <!-- test browser flexbox support and load legacy grid if unsupported -->
+    <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.0.0/js/modernizr.js"></script>
+    <script type="text/javascript">
+        Modernizr.load({
+          test: Modernizr.flexbox,
+          nope : 'http://cdn.ink.sapo.pt/3.0.0/css/ink-legacy.min.css'
+        });
+    </script>
+
+    <script type="text/javascript" src=""></script>
+    <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.0.0/js/holder.js"></script>
+    <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.0.0/js/ink-all.min.js"></script>
+    <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.0.0/js/autoload.js"></script>
+    {% block header_js %}
+    {% endblock %}
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body class="ink-drawer" data-twttr-rendered="true">
+    <div class="ink-grid">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+{% block footer_js %}
+{% endblock %}
+</html>

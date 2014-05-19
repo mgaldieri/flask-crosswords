@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Crosswords Generator{% endblock %}
+{% block content %}
+<div class="page-header">
+    <p class="slab-300">dobraLab</p>
+    <h1 class="slab">Crosswords</h1>
+    <p>Gerador de palavras cruzadas a partir de GDocs</p>
+    <div class="rainbow separator"></div>
+</div>
+<div id="form-container" class="column-group push-center">
+    <div class="all-50">
+        <form class="ink-form">
+            <div class="control-group header-spc">
+                <label for="gdocs_address">Endereço da spreadsheet:</label>
+                <div class="control">
+                    <input id="gdocs_address" type="text" placeholder="Cole aqui o endreço do GDoc">
+                    <p class="tip">Copie o endereço completo da spreadsheet como aparece na barra do navegador.
+                        Não esqueça de definir o compartilhamento do GDoc.</p>
+                </div>
+            </div>
+            <div class="column-group gutters">
+                <div class="control-group all-33">
+                    <label for="cols">No. de colunas:</label>
+                    <div class="control">
+                        <input type="text" id="cols">
+                    </div>
+                </div>
+                <div class="control-group all-33">
+                    <label for="rows">No. de linhas:</label>
+                    <div class="control">
+                        <input type="text" id="rows">
+                    </div>
+                </div>
+                <div class="control-group all-33">
+                    <label for="lowercase">Caixa:</label>
+                    <div class="control append-button">
+                        <span><input type="text" id="lowercase" placeholder="Selecione" disabled></span>
+                        <div class="ink-dropdown" data-target="#case-dropdown" id="dropdown-menu" data-is-toggle-trigger="true">
+                            <button class="ink-button"><i class="fa fa-chevron-down"></i></button>
+                            <ul id="case-dropdown" class="dropdown-menu hide-all">
+                                <li><a href="#">Minúsculas</a></li>
+                                <li><a href="#">Maiúsculas</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<hr>
+<div class="column-group push-center">
+    <button class="ink-button blue" id="form-submit">enviar</button>
+</div>
+{% endblock %}
+{% block footer_js %}
+<script type="text/javascript">
+    Ink.requireModules( ['Ink.UI.Dropdown_1'], function( Dropdown ){
+        //new Dropdown('#dropdown-menu').dismiss(function(handler){
+        //    console.log(handler);
+        //});
+    });
+</script>
+{% endblock %}
