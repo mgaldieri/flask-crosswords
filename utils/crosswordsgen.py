@@ -289,7 +289,7 @@ class Crossword(object):
                 outstr += '%s ' % c
             outstr += '\n'
 
-        outstr = re.sub(r'[a-z]', ' ', outstr)
+        outstr = re.sub(r'['+''.join(pt_BR.allchars)+']', ' ', outstr)
         return outstr
 
     def word_bank(self):
@@ -365,7 +365,7 @@ a.compute_crossword(10)
 print a.solution()
 print a.word_find()
 # print [list(line) for line in a.word_find().split('\n')]
-# print a.display()
-# print a.legend(order=True)
+print a.display(order=True)
+print a.legend(order=True)
 print 'Encaixadas %d palavras de um total de %d' % (len(a.current_word_list), len(word_list))
 print 'Melhor score: %d' % a.debug

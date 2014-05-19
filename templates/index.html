@@ -32,14 +32,14 @@
                     </div>
                 </div>
                 <div class="control-group all-33">
-                    <label for="lowercase">Caixa:</label>
+                    <label for="lowercase-hld">Caixa:</label>
                     <div class="control append-button">
-                        <span><input type="text" id="lowercase" placeholder="Selecione" disabled></span>
+                        <span><input type="text" id="lowercase-hld" placeholder="Selecione" disabled></span>
                         <div class="ink-dropdown" data-target="#case-dropdown" id="dropdown-menu" data-is-toggle-trigger="true">
                             <button class="ink-button"><i class="fa fa-chevron-down"></i></button>
                             <ul id="case-dropdown" class="dropdown-menu hide-all">
-                                <li><a href="#">Minúsculas</a></li>
-                                <li><a href="#">Maiúsculas</a></li>
+                                <li><a href="#" class="case-option">Minúsculas</a></li>
+                                <li><a href="#" class="case-option">Maiúsculas</a></li>
                             </ul>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
 {% endblock %}
 {% block footer_js %}
 <script type="text/javascript">
-    Ink.requireModules( ['Ink.UI.Dropdown_1'], function( Dropdown ){
+    Ink.requireModules( ['Ink.UI.Dropdown_1'], function( Dropdown ) {
         //new Dropdown('#dropdown-menu').dismiss(function(handler){
         //    console.log(handler);
         //});
