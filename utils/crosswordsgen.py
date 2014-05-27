@@ -359,7 +359,7 @@ word_list = [[u'Viva Novos Tempos', u''],
              [u'Colaboradores', u''],
              [u'Ação', u'']]
 
-a = Crossword(0, 0, '-', 5000, word_list, False)
+a = Crossword(26, 10, '-', 5000, word_list, False)
 a.compute_crossword(10)
 # print a.word_bank()
 print a.solution()

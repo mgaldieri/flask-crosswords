@@ -20,28 +20,24 @@
             </div>
             <div class="column-group gutters">
                 <div class="control-group all-33">
-                    <label for="cols">No. de colunas:</label>
-                    <div class="control">
-                        <input type="text" id="cols">
-                    </div>
-                </div>
-                <div class="control-group all-33">
                     <label for="rows">No. de linhas:</label>
                     <div class="control">
                         <input type="text" id="rows">
                     </div>
                 </div>
                 <div class="control-group all-33">
-                    <label for="lowercase-hld">Caixa:</label>
-                    <div class="control append-button">
-                        <span><input type="text" id="lowercase-hld" placeholder="Selecione" disabled></span>
-                        <div class="ink-dropdown" data-target="#case-dropdown" id="dropdown-menu" data-is-toggle-trigger="true">
-                            <button class="ink-button"><i class="fa fa-chevron-down"></i></button>
-                            <ul id="case-dropdown" class="dropdown-menu hide-all">
-                                <li><a href="#" class="case-option">Minúsculas</a></li>
-                                <li><a href="#" class="case-option">Maiúsculas</a></li>
-                            </ul>
-                        </div>
+                    <label for="cols">No. de colunas:</label>
+                    <div class="control">
+                        <input type="text" id="cols">
+                    </div>
+                </div>
+                <div class="control-group all-33">
+                    <label for="lowercase-hld">Tipo:</label>
+                    <div class="control">
+                        <select id="lowercase-hld">
+                            <option value="0">Caça-Palavras</option>
+                            <option value="1">Palavras Cruzadas</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -55,10 +51,10 @@
 {% endblock %}
 {% block footer_js %}
 <script type="text/javascript">
-    Ink.requireModules( ['Ink.UI.Dropdown_1'], function( Dropdown ) {
+    //Ink.requireModules( ['Ink.UI.Dropdown_1'], function( Dropdown ) {
         //new Dropdown('#dropdown-menu').dismiss(function(handler){
         //    console.log(handler);
         //});
-    });
+    //});
 </script>
 {% endblock %}
