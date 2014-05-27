@@ -4,6 +4,7 @@ __author__ = 'mgaldieri'
 import random
 import re
 import time
+import pickle
 import string
 from copy import copy as duplicate
 from chars import pt_BR
@@ -309,6 +310,21 @@ class Crossword(object):
             outstr += '%d. (%d,%d) %s: %s\n' % (word.number, word.col, word.row, word.down_across(), word.clue)
         return outstr
 
+    def grid_structure(self, order=False):
+        if order:
+            self.order_number_words()
+
+        struct = []
+        copy = self
+        for word in self.current_word_list:
+            copy.set_cell(word.col, word.row, word.number)
+
+        for row in range(self.rows):
+            for col in range(self.cols):
+                struct.append({'value': self.get_cell(col, row), })
+                               #'number': copy.get_cell(col, row)})
+
+        return struct
 
 class Word(object):
     def __init__(self, word=None, clue=None, lowercase=True):
@@ -329,7 +345,7 @@ class Word(object):
             return 'horizontal'
 
     def __repr__(self):
-        return self.word
+        return self.word.encode('utf-8')
 
 
 word_list = [[u'Viva Novos Tempos', u''],
@@ -359,13 +375,19 @@ word_list = [[u'Viva Novos Tempos', u''],
              [u'Colaboradores', u''],
              [u'Ação', u'']]
 
-a = Crossword(26, 10, '-', 5000, word_list, False)
-a.compute_crossword(10)
+a = Crossword(0, 0, '-', 5000, word_list, False)
+a.compute_crossword(5)
+print a.grid_structure()
 # print a.word_bank()
-print a.solution()
-print a.word_find()
-# print [list(line) for line in a.word_find().split('\n')]
-print a.display(order=True)
-print a.legend(order=True)
-print 'Encaixadas %d palavras de um total de %d' % (len(a.current_word_list), len(word_list))
-print 'Melhor score: %d' % a.debug
+# print a.solution()
+# print a.word_find()
+# print [list(line) for line in a.solution().replace(' ', '').split('\n')]
+# print a.display(order=True)
+# print a.legend(order=True)
+# print 'Encaixadas %d palavras de um total de %d' % (len(a.current_word_list), len(word_list))
+# print 'Melhor score: %d' % a.debug
+
+data = [list(line) for line in a.solution().replace(' ', '').split('\n')]
+with open('cross_data.pickle', 'wb') as f:
+    pickle.dump(data, f)
+
