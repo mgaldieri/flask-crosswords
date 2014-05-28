@@ -20,9 +20,11 @@ class Crossword(object):
         self.lowercase = lowercase
         self.randomize_word_list()
         self.current_word_list = []
+        self.coords_words = set()
         self.debug = 0
         self.grid = []
         self.clear_grid()
+        self.ordered = False
 
     def clear_grid(self):  # initialize grid and fill with empty character
         for i in range(self.rows):
@@ -116,17 +118,17 @@ class Crossword(object):
             if len(self.current_word_list) == 0:  # this is the first word: the seed
                 # top left seed of longest word yields best results (maybe override)
                 vertical, col, row = random.randrange(0, 2), 1, 1
-                if len(self.available_words[0].word) <= (2*max(self.cols, self.rows))/3:
+                if len(self.available_words[0].word) <= (2 * max(self.cols, self.rows)) / 3:
                     # optional center seed method, slower and less keyword placement
                     if vertical:
-                        col = int(round((self.cols + 1)/2, 0))
-                        row = int(round((self.rows + 1)/2, 0)) - int(round((word.length + 1)/2, 0))
+                        col = int(round((self.cols + 1) / 2, 0))
+                        row = int(round((self.rows + 1) / 2, 0)) - int(round((word.length + 1) / 2, 0))
                     else:
-                        col = int(round((self.cols + 1)/2, 0)) - int(round((word.length + 1)/2, 0))
-                        row = int(round((self.rows + 1)/2, 0))
-                    # completely random seed method
-                    # col = random.randrange(1, self.cols + 1)
-                    # row = random.randrange(1, self.rows + 1)
+                        col = int(round((self.cols + 1) / 2, 0)) - int(round((word.length + 1) / 2, 0))
+                        row = int(round((self.rows + 1) / 2, 0))
+                        # completely random seed method
+                        # col = random.randrange(1, self.cols + 1)
+                        # row = random.randrange(1, self.rows + 1)
 
                 if self.check_fit_score(col, row, vertical, word):
                     fit = True
@@ -257,7 +259,8 @@ class Crossword(object):
         for r in range(self.rows):
             for c in self.grid[r]:
                 if c == self.empty:
-                    outstr += '%s ' % random.choice(pt_BR.lowercase if self.lowercase else pt_BR.uppercase) #string.lowercase[random.randint(0, len(string.lowercase) - 1)]
+                    outstr += '%s ' % random.choice(
+                        pt_BR.lowercase if self.lowercase else pt_BR.uppercase)  # string.lowercase[random.randint(0, len(string.lowercase) - 1)]
                 else:
                     outstr += '%s ' % c
             outstr += '\n'
@@ -274,6 +277,7 @@ class Crossword(object):
                 else:
                     count += 1
             icount += 1
+        self.ordered = True
 
     def display(self, order=False):  # return (and order/number wordlist) the grid minus the words adding the numbers
         outstr = ""
@@ -290,7 +294,7 @@ class Crossword(object):
                 outstr += '%s ' % c
             outstr += '\n'
 
-        outstr = re.sub(r'['+''.join(pt_BR.allchars)+']', ' ', outstr)
+        outstr = re.sub(r'[' + ''.join(pt_BR.allchars) + ']', ' ', outstr)
         return outstr
 
     def word_bank(self):
@@ -310,21 +314,31 @@ class Crossword(object):
             outstr += '%d. (%d,%d) %s: %s\n' % (word.number, word.col, word.row, word.down_across(), word.clue)
         return outstr
 
-    def grid_structure(self, order=False):
-        if order:
+    def grid_structure(self):
+        if not self.ordered:
             self.order_number_words()
 
-        struct = []
-        copy = self
+        temp_list = [[''] * self.cols] * self.rows
+        # print temp_list
         for word in self.current_word_list:
-            copy.set_cell(word.col, word.row, word.number)
+            for word in self.current_word_list:
+                self.coords_words.add((word.col, word.row))
+                temp_list[word.row][word.col] = word.number
 
+        struct = []
         for row in range(self.rows):
+            struct_row = []
             for col in range(self.cols):
-                struct.append({'value': self.get_cell(col, row), })
-                               #'number': copy.get_cell(col, row)})
-
+                if (col, row) in self.coords_words:
+                    struct_row.append({'value': self.get_cell(col, row),
+                                       'number': temp_list[row][col],
+                                       'clue': self.current_word_list[int(temp_list[row][col]) - 1].clue})
+                    # 'word': self.current_word_list[int(temp_list[row][col])-1]})
+                else:
+                    struct_row.append({'value': self.get_cell(col, row)})
+            struct.append(struct_row)
         return struct
+
 
 class Word(object):
     def __init__(self, word=None, clue=None, lowercase=True):
@@ -377,7 +391,7 @@ word_list = [[u'Viva Novos Tempos', u''],
 
 a = Crossword(0, 0, '-', 5000, word_list, False)
 a.compute_crossword(5)
-print a.grid_structure()
+# print a.grid_structure()
 # print a.word_bank()
 # print a.solution()
 # print a.word_find()
@@ -387,7 +401,9 @@ print a.grid_structure()
 # print 'Encaixadas %d palavras de um total de %d' % (len(a.current_word_list), len(word_list))
 # print 'Melhor score: %d' % a.debug
 
-data = [list(line) for line in a.solution().replace(' ', '').split('\n')]
+# data = [list(line) for line in a.solution().replace(' ', '').split('\n')]
+data = a.grid_structure()
+print data
 with open('cross_data.pickle', 'wb') as f:
     pickle.dump(data, f)
 
