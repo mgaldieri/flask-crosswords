@@ -8,10 +8,11 @@ import pickle
 import string
 from copy import copy as duplicate
 from chars import pt_BR
+from pprint import pprint
 
 
 class Crossword(object):
-    def __init__(self, cols=0, rows=0, empty='-', maxloops=2000, available_words=[], lowercase=True, black_list=[]):
+    def __init__(self, cols=0, rows=0, empty='-', maxloops=2000, available_words=[], lowercase=False, black_list=[]):
         self.cols = cols if cols > 0 else len(available_words)
         self.rows = rows if rows > 0 else len(available_words)
         self.empty = empty
@@ -318,12 +319,12 @@ class Crossword(object):
         if not self.ordered:
             self.order_number_words()
 
-        temp_list = [[''] * self.cols] * self.rows
-        # print temp_list
+        temp_list = [['' for col in range(self.cols)] for row in range(self.rows)]
+
         for word in self.current_word_list:
-            for word in self.current_word_list:
-                self.coords_words.add((word.col, word.row))
-                temp_list[word.row][word.col] = word.number
+            self.coords_words.add((word.col, word.row))
+            temp_list[word.row][word.col] = word.number
+            # print word.number, (word.row, word.col), temp_list[word.row] #[word.col-1]
 
         struct = []
         for row in range(self.rows):
@@ -389,8 +390,8 @@ word_list = [[u'Viva Novos Tempos', u''],
              [u'Colaboradores', u''],
              [u'Ação', u'']]
 
-a = Crossword(0, 0, '-', 5000, word_list, False)
-a.compute_crossword(5)
+# a = Crossword(0, 0, '-', 5000, word_list, False)
+# a.compute_crossword(5)
 # print a.grid_structure()
 # print a.word_bank()
 # print a.solution()
@@ -402,8 +403,13 @@ a.compute_crossword(5)
 # print 'Melhor score: %d' % a.debug
 
 # data = [list(line) for line in a.solution().replace(' ', '').split('\n')]
-data = a.grid_structure()
-print data
-with open('cross_data.pickle', 'wb') as f:
-    pickle.dump(data, f)
+# data = a.grid_structure()
+# print data
+# with open('cross_data.pickle', 'wb') as f:
+#     pickle.dump(data, f)
 
+
+def generate(width=0, height=0, wordlist=[], maxtime=10, maxloops=5000, empty='-', lowercase=False, blacklist=[]):
+    xwords = Crossword(width, height, empty, maxloops, wordlist)
+    xwords.compute_crossword(maxtime)
+    return xwords.grid_structure()

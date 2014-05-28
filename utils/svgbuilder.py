@@ -1,20 +1,24 @@
 __author__ = 'mgaldieri'
 
-import svgwrite, math, pickle
+import svgwrite, math, pickle, os
+from zipfile import ZipFile
+from operator import itemgetter
 from pprint import pprint
 
 
-def generate(size, data, empty='-'):
-    doc_size = str(size[0]) + 'px', str(size[1]) + 'px'
-    svg_xwrd = svgwrite.Drawing(filename='xwords_grid.svg', size=doc_size, debug=True)
-    svg_ans = svgwrite.Drawing(filename='xwords_answers.svg', size=doc_size, debug=True)
+def generate(data, max_size=800, dirname='svg', empty='-'):
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+    doc_size = str(max_size) + 'px', str(max_size) + 'px'
+    svg_xwrd = svgwrite.Drawing(filename=os.path.join(dirname, 'xwords_grid.svg'), size=doc_size, debug=True)
+    svg_ans = svgwrite.Drawing(filename=os.path.join(dirname, 'xwords_answers.svg'), size=doc_size, debug=True)
 
-    g_width = math.floor(float(size[0]) / len(data[0]))
-    g_height = math.floor(float(size[1]) / len(data))
+    g_width = math.floor(float(max_size) / len(data[0]))
+    g_height = math.floor(float(max_size) / len(data))
     # x_offset = math.floor(float(g_width)/10)
     offset = math.floor(float(g_height) / 10)
     font_size = math.floor(max([g_width, g_height]) * 0.8)
-    font_size_min = math.floor(max([g_width, g_height]) * 0.2)
+    font_size_min = math.floor(max([g_width, g_height]) * 0.3)
 
     clues = []
     for row in range(len(data)):
@@ -28,7 +32,7 @@ def generate(size, data, empty='-'):
                                            fill='white'))
                 if 'number' in data[row][col]:
                     svg_xwrd.add(svg_xwrd.text(str(data[row][col]['number']),
-                                               insert=((g_width * col) + 1.5 * offset, (g_height * row) + 2 * offset),
+                                               insert=((g_width * col) + 2 * offset, (g_height * row) + 3 * offset),
                                                font_size=str(font_size_min) + 'px',
                                                font_family='Arial',
                                                text_anchor='middle'))
@@ -48,14 +52,22 @@ def generate(size, data, empty='-'):
 
     svg_xwrd.save()
     svg_ans.save()
-    with open('xwords_clues.txt', 'w') as file:
-        for clue in clues:
-            file.write('%d - %s\n' % (clue[0], clue[1]))
+    with open(os.path.join(dirname, 'xwords_clues.txt'), 'w') as txt_f:
+        for clue in sorted(clues, key=lambda x: x[0]):
+            txt_f.write('%d - %s\n' % (clue[0], clue[1].encode('utf-8')))
+
+    with ZipFile(dirname+'.zip', 'w') as zf:
+        for dir, subdirs, files in os.walk(dirname):
+            zf.write(dir)
+            for file in files:
+                zf.write(os.path.join(dir, file))
+                os.remove(os.path.join(dir, file))
+            os.removedirs(dir)
 
 
 with open('cross_data.pickle', 'rb') as f:
     data = pickle.load(f)
-
-pprint(data)
-# print len(data)
-generate((800, 800), data)
+#
+# pprint(data)
+# # print len(data)
+generate(data)
