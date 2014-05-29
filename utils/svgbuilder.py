@@ -1,9 +1,10 @@
 __author__ = 'mgaldieri'
 
-import svgwrite, math, pickle, os
+import math
+import os
 from zipfile import ZipFile
-from operator import itemgetter
-from pprint import pprint
+
+import svgwrite
 
 
 def generate(data, max_size=800, dirname='svg', empty='-'):
@@ -20,35 +21,43 @@ def generate(data, max_size=800, dirname='svg', empty='-'):
     font_size = math.floor(max([g_width, g_height]) * 0.8)
     font_size_min = math.floor(max([g_width, g_height]) * 0.3)
 
+    # create groups
+    xwrd_grid_g = svg_xwrd.add(svg_xwrd.g(id='xwrd_grid_g'))
+    xwrd_num_b = svg_xwrd.add(svg_xwrd.g(id='xwrd_num_b'))
+
+    ans_grid_g = svg_ans.add(svg_ans.g(id='ans_grid_g'))
+    ans_char_g = svg_ans.add(svg_ans.g(id='ans_char_g'))
+
     clues = []
     for row in range(len(data)):
         for col in range(len(data[row])):
             if data[row][col]['value'] != empty:
                 # generate empty grid
-                svg_xwrd.add(svg_xwrd.rect(insert=(g_width * col, g_height * row),
-                                           size=(str(g_width) + 'px', str(g_height) + 'px'),
-                                           stroke_width=1,
-                                           stroke='black',
-                                           fill='white'))
+                xwrd_grid_g.add(svg_xwrd.rect(insert=(g_width * col, g_height * row),
+                                              size=('-'+str(g_width) + 'px', '-'+str(g_height) + 'px'),
+                                              stroke_width=1,
+                                              stroke='black',
+                                              fill='white'))
                 if 'number' in data[row][col]:
-                    svg_xwrd.add(svg_xwrd.text(str(data[row][col]['number']),
-                                               insert=((g_width * col) + 2 * offset, (g_height * row) + 3 * offset),
-                                               font_size=str(font_size_min) + 'px',
-                                               font_family='Arial',
-                                               text_anchor='middle'))
+                    xwrd_num_b.add(svg_xwrd.text(str(data[row][col]['number']),
+                                                 insert=((g_width * col) - (g_width-1.5*offset),
+                                                         (g_height * row) - (g_height-font_size_min)),
+                                                 font_size=str(font_size_min) + 'px',
+                                                 font_family='Arial',
+                                                 text_anchor='middle'))
                     clues.append((data[row][col]['number'], data[row][col]['clue']))
                 # generate answer grid
-                svg_ans.add(svg_ans.rect(insert=(g_width * col, g_height * row),
-                                         size=(str(g_width) + 'px', str(g_height) + 'px'),
-                                         stroke_width=1,
-                                         stroke='black',
-                                         fill='white'))
-                svg_ans.add(svg_ans.text(data[row][col]['value'],
-                                         insert=((g_width * col) + (g_width / 2),
-                                                 (g_height * row) + g_height / 2 + (g_height - font_size + offset)),
-                                         font_size=str(font_size) + 'px',
-                                         font_family='Arial',
-                                         text_anchor='middle'))
+                ans_grid_g.add(svg_ans.rect(insert=(g_width * col, g_height * row),
+                                            size=('-'+str(g_width) + 'px', '-'+str(g_height) + 'px'),
+                                            stroke_width=1,
+                                            stroke='black',
+                                            fill='white'))
+                ans_char_g.add(svg_ans.text(data[row][col]['value'],
+                                            insert=((g_width * col) - (g_width / 2),
+                                                    (g_height * row) - g_height / 2 + (g_height - font_size + offset)),
+                                            font_size=str(font_size) + 'px',
+                                            font_family='Arial',
+                                            text_anchor='middle'))
 
     svg_xwrd.save()
     svg_ans.save()
@@ -56,7 +65,7 @@ def generate(data, max_size=800, dirname='svg', empty='-'):
         for clue in sorted(clues, key=lambda x: x[0]):
             txt_f.write('%d - %s\n' % (clue[0], clue[1].encode('utf-8')))
 
-    with ZipFile(dirname+'.zip', 'w') as zf:
+    with ZipFile(dirname + '.zip', 'w') as zf:
         for dir, subdirs, files in os.walk(dirname):
             zf.write(dir)
             for file in files:
@@ -65,9 +74,9 @@ def generate(data, max_size=800, dirname='svg', empty='-'):
             os.removedirs(dir)
 
 
-with open('cross_data.pickle', 'rb') as f:
-    data = pickle.load(f)
-#
-# pprint(data)
-# # print len(data)
-generate(data)
+            # with open('cross_data.pickle', 'rb') as f:
+            # data = pickle.load(f)
+            #
+            # pprint(data)
+            # # print len(data)
+            # generate(data)

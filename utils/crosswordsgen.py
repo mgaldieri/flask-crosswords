@@ -323,7 +323,7 @@ class Crossword(object):
 
         for word in self.current_word_list:
             self.coords_words.add((word.col, word.row))
-            temp_list[word.row][word.col] = word.number
+            temp_list[word.row-1][word.col-1] = word.number
             # print word.number, (word.row, word.col), temp_list[word.row] #[word.col-1]
 
         struct = []
@@ -332,8 +332,8 @@ class Crossword(object):
             for col in range(self.cols):
                 if (col, row) in self.coords_words:
                     struct_row.append({'value': self.get_cell(col, row),
-                                       'number': temp_list[row][col],
-                                       'clue': self.current_word_list[int(temp_list[row][col]) - 1].clue})
+                                       'number': temp_list[row-1][col-1],
+                                       'clue': self.current_word_list[int(temp_list[row-1][col-1]) - 1].clue})
                     # 'word': self.current_word_list[int(temp_list[row][col])-1]})
                 else:
                     struct_row.append({'value': self.get_cell(col, row)})
