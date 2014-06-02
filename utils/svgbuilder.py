@@ -34,27 +34,27 @@ def generate(data, max_size=800, dirname='svg', empty='-'):
             if data[row][col]['value'] != empty:
                 # generate empty grid
                 xwrd_grid_g.add(svg_xwrd.rect(insert=(g_width * col, g_height * row),
-                                              size=('-'+str(g_width) + 'px', '-'+str(g_height) + 'px'),
+                                              size=(str(g_width) + 'px', str(g_height) + 'px'),
                                               stroke_width=1,
                                               stroke='black',
-                                              fill='white'))
+                                              fill='rgb(255,255,255)'))
                 if 'number' in data[row][col]:
                     xwrd_num_b.add(svg_xwrd.text(str(data[row][col]['number']),
-                                                 insert=((g_width * col) - (g_width-1.5*offset),
-                                                         (g_height * row) - (g_height-font_size_min)),
+                                                 insert=((g_width * col) + (2*offset),
+                                                         (g_height * row) + font_size_min),
                                                  font_size=str(font_size_min) + 'px',
                                                  font_family='Arial',
                                                  text_anchor='middle'))
                     clues.append((data[row][col]['number'], data[row][col]['clue']))
                 # generate answer grid
                 ans_grid_g.add(svg_ans.rect(insert=(g_width * col, g_height * row),
-                                            size=('-'+str(g_width) + 'px', '-'+str(g_height) + 'px'),
+                                            size=(str(g_width) + 'px', str(g_height) + 'px'),
                                             stroke_width=1,
                                             stroke='black',
                                             fill='white'))
                 ans_char_g.add(svg_ans.text(data[row][col]['value'],
-                                            insert=((g_width * col) - (g_width / 2),
-                                                    (g_height * row) - g_height / 2 + (g_height - font_size + offset)),
+                                            insert=((g_width * col) + (g_width / 2),
+                                                    (g_height * row) + font_size),
                                             font_size=str(font_size) + 'px',
                                             font_family='Arial',
                                             text_anchor='middle'))
